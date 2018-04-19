@@ -22,6 +22,11 @@ var isDisplayModeOn;
 var map, infoWindow, Popup;
 var loc;
 
+// variable to keep track of the marker we are editing
+var lastMarkerClicked;
+
+var markerCount = 0;
+
 // ================================
 // ======= GLOBAL FUNCTIONS =======
 // ================================
@@ -37,7 +42,7 @@ function initMap() {
     // declaring map object
     map = new google.maps.Map(document.getElementById("map"), {
         center: defaultLoc,
-        zoom: 14,
+        zoom: 13,
         fullscreenControl: false,
         streetViewControl: false,
         mapTypeControl: false,
@@ -95,13 +100,17 @@ function initMap() {
             content: contentString
         });
 
+        console.log("Markers: " + markerCount);
+        markerCount += 1;
+
         var marker = new google.maps.Marker({
             position: { lat: childSnapshot.val().markLat, lng: childSnapshot.val().markLng },
             map: map,
             name: childSnapshot.val().name,
             content: childSnapshot.val().content,
             date: childSnapshot.val().date,
-            location: childSnapshot.val().location
+            location: childSnapshot.val().location,
+            key: childSnapshot.key
         });
 
         // popup that replaces infowindow
@@ -113,6 +122,7 @@ function initMap() {
             new google.maps.LatLng(childSnapshot.val().markLat, childSnapshot.val().markLng),
             content);
 
+        popup.marker = marker;
         marker.popup = popup;
         marker.infowindow = infowindow;
         marker.addListener("click", displayMarkerData);
@@ -149,6 +159,9 @@ function initMap() {
         console.log(marker);
         console.log(loc.lat());
 
+        // update last clicked marker for editing
+        updateLastMarkerClicked(marker);
+
         // new marker data
         // popup that replaces infowindow
         var content = document.createElement("div");
@@ -159,6 +172,7 @@ function initMap() {
             new google.maps.LatLng(marker.position.lat, marker.position.lng),
             content);
 
+        popup.marker = marker;
         marker.popup = popup;
         marker.infowindow = infowindow;
         marker.addListener("click", displayMarkerData);
@@ -196,7 +210,21 @@ function initMap() {
             markLng: loc.lng()
         };
 
-        database.ref().push(newComment);
+        // if it has a key, it is an old marker we need to update
+        if (lastMarkerClicked.key) {
+            console.log("comment: " + newComment);
+            console.log("key: " + database.ref().child(lastMarkerClicked.key));
+            database.ref().child(lastMarkerClicked.key).update(newComment)
+                .then(() => {
+                    console.log("Successfully updated marker.");
+                })
+                .catch(err => {
+                    console.log("error code: " + err.code + " error: " + err);
+                });
+            lastMarkerClicked.popup.content.innerHTML = content.slice(0, 40) + " ..."; // update popup text
+        } else {
+            database.ref().push(newComment);
+        }
 
         $("#name-input").val("");
         $("#comment-input").val("");
@@ -242,6 +270,8 @@ function displayMarkerData() {
     $(".location").text(marker.location);
     $(".date").text(marker.date);
 
+    updateLastMarkerClicked(marker);
+
     if (isDisplayModeOn === true) {
 
         console.log(map);
@@ -255,11 +285,19 @@ function displayMarkerData() {
 
     }
 
+}
+
+// function called when a marker gets clicked (or its blurb gets clicked)
+function updateLastMarkerClicked(marker) {
+    lastMarkerClicked = marker;
 };
 
-function blurbClicked() {
+function blurbClicked(popup) {
 
     console.log("Blurb clicked!");
+
+    // update last clicked marker since this opens the sidepanel
+    updateLastMarkerClicked(popup.marker);
 
     if ($("#display-mode").hasClass("active")) {
 
@@ -291,7 +329,7 @@ function toggleDisplay() {
     $("#edit-mode").removeClass("active");
     $("#display-mode").addClass("active");
 
-};
+}
 
 // toggle functions
 function toggleEdit() {
@@ -304,7 +342,7 @@ function toggleEdit() {
     $("#display-mode").removeClass("active");
     $("#edit-mode").addClass("active");
 
-};
+}
 
 // hide toggles
 function hideAllInfo() {
@@ -313,13 +351,14 @@ function hideAllInfo() {
     $("#side-panel").removeClass("smenu-open").addClass("smenu-close");
     $("#side-edit").removeClass("smenu-open").addClass("smenu-close");
 
-};
+}
 
 // function for popups
 function definePopupClass() {
 
     Popup = function (position, content) {
         this.position = position;
+        this.content = content;
 
         content.classList.add('popup-bubble-content');
 
@@ -394,7 +433,7 @@ function definePopupClass() {
 
         anchor.addEventListener('click', function (e) {
             // Edit this function to do stuff on click 
-            blurbClicked();
+            blurbClicked(popup);
 
             // Just make sure that the click doesn't go through to the map
             e.stopPropagation();

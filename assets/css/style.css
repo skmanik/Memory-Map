@@ -15,6 +15,7 @@ body {
 
 ul, li {
     margin: 0;
+    padding: 0;
 }
 
 li {
@@ -27,14 +28,14 @@ li {
 }
 
 .main {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     margin-top: -150px;
 }
 
 /* header */
 
 .masthead {
-    background: transparent;
+    background: #abb9ff;
     padding-top: 120px;
     padding-bottom: 200px;
     border-bottom-left-radius: 50% 50%;
@@ -75,6 +76,7 @@ li {
     font-size: 11px;
     letter-spacing: 1px;
     box-shadow: 0px 9px 30px -6px rgb(77, 128, 216); 
+    transition: 0.15s ease-in-out;
 }
 
 /* navigation */
@@ -92,6 +94,10 @@ nav {
 nav .logo {
     float: left;
     font-size: 145%;
+}
+
+nav .logo a {
+    text-decoration: none;
     color: #f5f8ff;
 }
 
@@ -116,6 +122,7 @@ nav .menu li>a>svg {
 }
 
 nav .menu li a {
+    cursor: pointer;
     text-decoration: none;
     color: #d9e4ff;
 }
@@ -163,6 +170,10 @@ nav .menu li a {
     letter-spacing: 0.5px;
 }
 
+.how-container h3 {
+    color: #777777;
+}
+
 .how-container .panel-body p {
     text-align: center;
     max-width: 85%;
@@ -182,6 +193,39 @@ nav .menu li a {
     color: #4e6afc;
     text-align: center;
     font-size: 2.3em;
+}
+
+.how-container .info-ul {
+    padding-top: 10px;
+    padding-bottom: 35px;
+    font-size: 15px;
+}
+
+.how-container .info-ul li {
+    margin-bottom: 5px;
+}
+
+footer {
+    height: 100px;
+    line-height: 100px;
+    padding-top: 4px;
+    text-align: center;
+    background: #7587fc;
+    color: #d9e4ff;
+    box-shadow: inset 0px 0px 15px rgb(77, 128, 216);
+}
+
+footer svg {
+    margin-right: 5px;
+    color: #fff;
+}
+
+footer .fa-wrench {
+    font-size: 20px;
+}
+
+footer strong {
+    margin-left: 3px;
 }
 
 /* ================= */
@@ -216,6 +260,7 @@ nav .menu li a {
     outline: none;
     padding: 0 11px 0 13px;
     text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     width: 400px;
 }
 
@@ -258,14 +303,15 @@ ul#toggle-panel {
     height: 100%;
     background: #fff;
     border: none;
-    border-radius: 0;
+    border-radius: 8px 0 0 8px;
     padding: 45px 20px 20px 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 3px 0px 5px rgba(0, 0, 0, 0.14);
+    overflow: hidden;
 
-    /* prefixes */
-    -webkit-transition: all 0.35s ease;
-    -moz-transition: all 0.35s ease;
-    transition: all 0.35s ease;
+    /* prefixes added */
+    -webkit-transition: 0.3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
 }
 
 #side-panel>.panel-heading,
@@ -281,6 +327,7 @@ ul#toggle-panel {
 #side-edit .panel-title {
     font-size: 1.8em;
     color: #777777;
+    word-wrap: break-word;
 }
 
 #side-panel h4,
@@ -290,6 +337,7 @@ ul#toggle-panel {
 
 #side-panel .close-button,
 #side-edit .close-button {
+    cursor: pointer;
     position: absolute;
     top: 10px;
     right: 20px;
@@ -298,11 +346,12 @@ ul#toggle-panel {
 }
 
 #side-panel .blurb {
-    overflow: scroll;
+    overflow: auto;
     height: 250px;
     margin-bottom: 25px;
     font-size: 90%;
     line-height: 180%;
+    word-wrap: break-word;
 }
 
 #side-panel .bottom-info {
@@ -312,6 +361,34 @@ ul#toggle-panel {
     width: 100%;
     background: #f5f8ff;
     padding: 25px 30px 15px 30px;
+    word-wrap: break-word;
+}
+
+#side-panel .bottom-info strong {
+    margin-right: 3px;
+}
+
+#side-edit #edit-button {
+    float: right;
+    margin-top: 15px;
+    background: #4d6afc;
+    color: #fff;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.map-placeholder .form-control {
+    color: #9b9b9b;
+    background-color: #f5f8ff;
+    background-image: none;
+    border: 0;
+    border-radius: 0px;
+    box-shadow: none;
 }
 
 /* custom pop-ups */
@@ -320,7 +397,6 @@ ul#toggle-panel {
     height: 0;
     position: absolute;
     z-index: 9999;
-    /* The max width of the info window. */
     width: 200px;
 }
 
@@ -328,7 +404,7 @@ ul#toggle-panel {
     position: absolute;
     z-index: 9999;
     width: 100%;
-    bottom: /* TIP_HEIGHT= */ 8px;
+    bottom: 8px;
     left: 0;
 }
 
@@ -338,7 +414,9 @@ ul#toggle-panel {
     top: -50px;
     left: 0;
 
-    /* prefix this */
+    /* prefixes added */
+    -webkit-transform: translate(-50%, -100%);
+    -ms-transform: translate(-50%, -100%);
     transform: translate(-50%, -100%);
 
     background: #99a8fd;
@@ -351,6 +429,8 @@ ul#toggle-panel {
     font-size: 12px;
     text-align: center;
     max-height: 60px;
+    min-width: 100px;
+    cursor: pointer;
 }
 
 .floaty:after {
@@ -371,6 +451,10 @@ ul#toggle-panel {
     word-wrap: break-word;
 }
 
+.greyed-out {
+    background: #e8e8e8 !important;
+}
+
 /* ======================= */
 /* ==== ALL ANIMATIONS === */
 /* ======================= */
@@ -378,6 +462,13 @@ ul#toggle-panel {
 #toggle-panel li.active {
     background-color: #4e6afc;
     color: #fff;
+}
+
+a.btn-more:active {
+    /* prefixes added */
+    -webkit-transform: translateY(5px);
+    -ms-transform: translateY(5px);
+    transform: translateY(5px);
 }
 
 /* menu animation for toggle */
@@ -397,8 +488,29 @@ ul#toggle-panel {
     animation-timing-function: ease-in-out;
 }
 
+@-webkit-keyframes floating {
+    from { 
+        -webkit-transform: translate(0,  0px); 
+        transform: translate(0,  0px); 
+    }
+    65%  { 
+        -webkit-transform: translate(0, 15px);
+        transform: translate(0, 15px); 
+    }
+    to   { 
+        -webkit-transform: translate(0, -0px); 
+        transform: translate(0, -0px); 
+    }  
+}
+
 @keyframes floating {
-    from { transform: translate(0,  0px); }
-    65%  { transform: translate(0, 15px); }
-    to   { transform: translate(0, -0px); }    
+    from { 
+        transform: translate(0,  0px); 
+    }
+    65%  { 
+        transform: translate(0, 15px); 
+    }
+    to   { 
+        transform: translate(0, -0px); 
+    }    
 }
