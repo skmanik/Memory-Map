@@ -18,14 +18,14 @@ var database = firebase.database();
 // variables for modes
 var isDisplayModeOn;
 
-// variable for Google Maps
-var map, infoWindow, popup, Popup;
+// variables for Google Maps
+var map, infoWindow, Popup, loc;
 
 // =============================
 // ========== ACTIONS ==========
 // =============================
 
-// toggle functions
+// general functions
 function toggleDisplay() {
 
     hideAllInfo();
@@ -76,6 +76,9 @@ function definePopupClass() {
 
         // Optionally stop clicks, etc., from bubbling up to the map.
         this.stopEventPropagation();
+
+        // Adds a click listener whenever a popup is created
+        this.addClickListener();
     };
     // NOTE: google.maps.OverlayView is only defined once the Maps API has
     // loaded. That is why Popup is defined inside initMap().
@@ -125,7 +128,69 @@ function definePopupClass() {
             });
     };
 
+    // This will add a function that will listen for clicks on the popups
+    Popup.prototype.addClickListener = function () {
+        var anchor = this.anchor;
+        var popup = this;
+        anchor.style.cursor = 'auto';
+
+        anchor.addEventListener('click', function (e) {
+            // handle click action in blurbClicked
+            console.log("Hello world!");
+            blurbClicked();
+
+            // Just make sure that the click doesn't go through to the map
+            e.stopPropagation();
+        });
+    };
+
 };
+
+function displayMarkerData () {
+
+    var marker = this;
+
+    loc = marker.position;
+    console.log(loc.lat() + "   " + loc.lng());
+
+    $(".name").text(marker.name);
+    $(".blurb").text(marker.content);
+    $(".location").text(marker.location);
+    $(".date").text(marker.date);
+
+    if (isDisplayModeOn === true) {
+
+        infowindow.open(map, marker);
+
+    } else if (isDisplayModeOn === false) {
+
+        $("#side-edit").removeClass("smenu-close").addClass("smenu-open");
+
+    }
+
+}
+
+function blurbClicked () {
+
+    console.log("Blurb clicked!");
+
+    if ($("#display-mode").hasClass("active")) {
+
+        console.log("Display mode has class active!");
+
+        // open side info when display mode is active
+        $("#side-panel").removeClass("smenu-close").addClass("smenu-open");
+
+    } else if ($("#edit-mode").hasClass("active")) {
+
+        console.log("Edit mode has class active!");
+
+        // open side edit when edit mode is active
+        $("#side-edit").removeClass("smenu-close").addClass("smenu-open");
+
+    }
+
+}
 
 // init Map function that MUST be declared globally, do not move into doc ready
 function initMap() {
@@ -229,11 +294,16 @@ function initMap() {
             if (isDisplayModeOn === true) {
 
                 // POPUP CODE
-                popup = new Popup(
+                var content = document.createElement("div");
+                content.innerHTML = "Add info to this marker!";
+
+                var popup = new Popup(
                     new google.maps.LatLng(latLng.lat(), latLng.lng()),
-                    document.getElementById("content"));
+                    // document.getElementById("content"));
+                    content);
                 popup.setMap(map);
 
+                // info window version
                 infowindow.open(map, clickMarker);
 
             } else if (isDisplayModeOn === false) {
@@ -248,9 +318,6 @@ function initMap() {
         hideAllInfo();
 
     });
-
-    // custom popup attempt
-
 
     // =============================
     // ========== display ==========
@@ -295,36 +362,6 @@ function initMap() {
         $("#side-panel").removeClass("smenu-open").addClass("smenu-close");
         $("#side-edit").removeClass("smenu-open").addClass("smenu-close");
         console.log("sidebar closed");
-
-    });
-
-    // for clicking on the blurb 
-    $(document.body).on("click", ".clickme", function () {
-
-        console.log("Blurb clicked!");
-
-        if ($("#display-mode").hasClass("active")) {
-
-            console.log("Display mode has class active!");
-
-            // open side info when display mode is active
-            $("#side-panel").removeClass("smenu-close").addClass("smenu-open");
-
-        } else if ($("#edit-mode").hasClass("active")) {
-
-            console.log("Edit mode has class active!");
-
-            // open side edit when edit mode is active
-            $("#side-edit").removeClass("smenu-close").addClass("smenu-open");
-
-        }
-
-    });
-
-    // POPUP CODE
-    $("#content").on("click", function () {
-
-        console.log("Test!");
 
     });
 
