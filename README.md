@@ -9,5 +9,3 @@ Display Mode: Click a marker to preview a memory. Click the preview to open up t
 Edit Mode: Click a marker to open up the memory edit panel. Fill out the memory form and hit submit. Click the marker in Display Mode to view the memory.
 
 GitHub Pages Link: [Memory-Map](https://memory-map.github.io/Main/)
-
-Link to Google Slides: [Google Slides](https://docs.google.com/presentation/d/1B2i_RZkZwiOaBuKQS-gurIIk8xswqZCLEqwdR7bBtGo/edit#slide=id.p)
